@@ -1,0 +1,80 @@
+    .anim-btn:hover{
+box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
+    }
+    .anim-btn{
+        transition: 0.3s ease-in-out;
+    }
+    
+    .comment:hover {
+        color:  #272d34 !important;
+    }
+
+    .like:hover {
+        color: #d7f498 !important;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .font-tebal {
+        font-weight: 500;
+    }
+
+    .font-liked-comment {
+        font-size: 0.75rem;
+    }
+
+    @font-face {
+        font-family: 'Mona Sans';
+        src:
+            url('asset/font/MonaSans[slnt\,wdth\,wght].woff2') format('woff2 supports variations'),
+            url('asset/font/MonaSans[slnt\,wdth\,wght].woff2') format('woff2-variations');
+        font-weight: 200 900;
+        font-stretch: 75% 125%;
+    }
+
+    * {
+font-family: 'Poppins', sans-serif;
+     -webkit-font-feature-settings: 'ss01';
+    font-feature-settings: 'ss01';
+        transition: 0.3s all;
+    }
+
+    aside.active {
+        width: 50px !important;
+    }
+
+    .activate {
+        display: none !important;
+    }
+
+    .nav-header {
+        border-left: 0px solid #757575;
+        transition: 0.3s all ease-in-out;
+    }
+
+    .img-profile {
+        min-width: 28px;
+    }
+
+    .text-black{
+        color:  #272d34 !important;
+    }
+
+    .nav-item.active a i {
+        color: white !important;
+    }
+
+    .btn-respon.active i {
+        transform: rotate(180deg);
+    }
+
+    .btn-respon i {
+        transform: rotate(360deg);
+    }
+
+@media (min-width: 1200px) { 
+            main{
+        }
+    }
