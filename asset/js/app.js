@@ -90,6 +90,16 @@ const _getPlaylistDetails = async (token, playlistId) => {
     return data;
 }
 
+    const _searchTracks = async (token, searchTerm) => {
+        const result = await fetch(`https://api.spotify.com/v1/search?q=${searchTerm}&type=track`, {
+            method: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+
+        const data = await result.json();
+        return data.tracks.items;
+    }
+
 // membuat player music
   const _getTrack = async (token, trackEndPoint) => {
 
@@ -116,6 +126,9 @@ const _getPlaylistDetails = async (token, playlistId) => {
       getPlaylistDetails(token, playlistId) {
         return _getPlaylistDetails(token, playlistId);
     },
+      searchTracks(token, searchTerm) {
+            return _searchTracks(token, searchTerm);
+        },
     }
 })();
 
@@ -152,6 +165,61 @@ const UIController = (function() {
            resetTrackDetail() {
             DOMElements.data.innerHTML = '';
         },
+
+        createSearchResult(id, name,img) {
+            const html = `
+             <div class="col" id="${id}">
+        <div class="card h-100">
+            <img src="${img}" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">${name}</h5>
+                <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional
+                    content. This content is a little bit longer.</p>
+            </div>
+        </div>
+    </div>
+            `;
+    document.getElementById('search-results').insertAdjacentHTML('beforeend', html);
+        },
+
+        createSearchResultDetail(img, title, artist, previewUrl) {
+            const detailDiv = document.querySelector(DOMElements.divSongDetail);
+            // Any time the user clicks a new song, clear out the song detail div
+            detailDiv.innerHTML = '';
+
+            const html =
+                `
+                <div class="row col-sm-12 px-0">
+                    <img src="${img}" alt="">        
+                </div>
+                <div class="row col-sm-12 px-0">
+                    <label for="Genre" class="form-label col-sm-12">${title}:</label>
+                </div>
+                <div class="row col-sm-12 px-0">
+                    <label for="artist" class="form-label col-sm-12">By ${artist}:</label>
+                </div>
+                <div class="row col-sm-12 px-0">
+                    <div class="audio-player">
+                        <audio controls id="audio-player">
+                            <source src="${previewUrl}" type="audio/mp3">
+                            Your browser does not support the audio tag.
+                        </audio>
+                    </div>
+                </div>
+            `;
+
+            detailDiv.insertAdjacentHTML('beforeend', html);
+
+            // Set the audio source
+            const audioPlayer = document.getElementById('audio-player');
+            audioPlayer.src = previewUrl;
+        },
+
+
+           resetSearchResults() {
+            document.getElementById('search-results').innerHTML = '';
+        },
+
 
          createPlaylistsongdetail(img, title, artist, previewUrl, url) {
             const detailDiv = document.querySelector('#player');
@@ -326,6 +394,34 @@ function pad(angka) {
 
 })();
 const APPController = (function(UICtrl, APICtrl) {
+
+  const initSearch = () => {
+
+        // Add event listener for search form submission
+        document.getElementById('search-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const searchTerm = document.getElementById('search').value;
+            if (searchTerm.trim() !== '') {
+                const token = UICtrl.getStoredToken().token;
+                const searchResult = await APICtrl.searchTracks(token, searchTerm);
+                // Clear existing search results, tracks, and track details
+                UICtrl.resetSearchResults();
+                 if (searchResult.length > 0) {
+            const search = searchResult;
+
+            // Save data to localStorage
+            localStorage.setItem('searchdata', JSON.stringify(search));
+
+            // Navigate to another page
+            window.location.href = 'searchresult.html';
+        }
+                // Create search result items
+            }
+        });
+
+
+    }
+
    const loadRecommendations = async (limit) => {
         // Get the token
         const token = await APICtrl.getToken();
@@ -391,13 +487,17 @@ const APPController = (function(UICtrl, APICtrl) {
     // Retrieve data from localStorage
     const jsonData = JSON.parse(localStorage.getItem('playlistData'));
     const jsonDataplaylist = JSON.parse(localStorage.getItem('playlist'));
-    console.log(jsonDataplaylist);
+    const jsonDataresult = JSON.parse(localStorage.getItem('searchdata'));
+    console.log(jsonDataresult);
         let angka = 1;
-        console.log(jsonData);
 
                 if (jsonDataplaylist !== null) {
 
     UICtrl.profilplaylist(jsonDataplaylist.id, jsonDataplaylist.name, jsonDataplaylist,jsonDataplaylist.description,jsonDataplaylist.followers.total, jsonDataplaylist.owner);        
+                }
+                if (jsonDataresult !== null) {
+                  
+                jsonDataresult.forEach(el => UICtrl.createSearchResult(el.href, el.name, el.album.images[2].url))
                 }
 
         if (jsonData && jsonData.length > 0) {
@@ -433,10 +533,13 @@ const APPController = (function(UICtrl, APICtrl) {
     });    
 }    
 
+
+
     return {
         init: () => {
             // Panggil fungsi untuk memuat rekomendasi dengan batas awal
             loadRecommendations(limitrecomend);
+            initSearch();
         },
         setRecommendationLimit: setRecommendationLimit,
         getRecommendationLimit: getRecommendationLimit,

@@ -180,18 +180,18 @@
                     <a class="navbar-brand d-xl-none d-block d-flex align-items-center gap-1"  href="#"><i class='bx bxl-spotify fs-3' style=" color: #1ed760;"></i>
                     Spotify
 </a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    <button class="navbar-toggler" onclick="responsive()"  data-bs-toggle="collapse"
                         aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <form class="d-flex me-auto pb-2 search-form" role="search">
+                    <div class="collapse navbar-collapse " id="navbarSupportedContent">
+                        <form class="d-flex me-auto pb-2 " id="search-form" role="search">
                             <input
                                 class="form-control rounded-0 border-0 me-2 shadow-none bg-white pt-2 border-end border-bottom"
                                 style="border-end-end-radius: 10px !important; margin-top: -4px; margin-left: -8px;"
                                 type="search" id="search" placeholder="Search" aria-label="Search">
+                                <button type="submit" name="submit">submit</button>
                         </form>
 
                         <ul class="navbar-nav  me-auto mb-2 mb-lg-0 gap-3 navbar-respon" >
@@ -690,7 +690,10 @@
                     </div>
                 </div>
             </div>
+            
+            <div id="search-results">
 
+            </div>
             <div class="w-100 mt-5">
                 <div class="row px-3">
                     <div class="col-4 text-start"><small>All previous</small></div>
@@ -1151,6 +1154,13 @@
             const data = document.querySelector('.toast');
             data.classList.toggle('show')
         });
+
+        function responsive(){
+            const data = document.getElementById('navbarSupportedContent');
+
+            data.classList.toggle('show');
+            data.classList.toggle('h-auto');
+        }
     </script>
 
 
